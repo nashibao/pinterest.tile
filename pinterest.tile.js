@@ -23,6 +23,7 @@ Pinterest.Tile = (function() {
     this.tile_width = tile_width ? tile_width : 320;
     this.get_tiles = get_tiles ? get_tiles : void 0;
     this.columns = [];
+    this.heights = [];
   }
 
   Tile.prototype.start = function() {
@@ -34,7 +35,7 @@ Pinterest.Tile = (function() {
   };
 
   Tile.prototype.resize = function(force_resizing) {
-    var col_index, col_num, column, container, dom, i, max_height, only_width, padding, _i, _j, _k, _l, _len, _len1, _len2, _ref, _ref1, _ref2, _ref3;
+    var col_index, col_num, column, container, dom, i, min_height, only_width, padding, _i, _j, _k, _l, _len, _len1, _len2, _ref, _ref1, _ref2, _ref3, _results, _results1;
     if (force_resizing == null) {
       force_resizing = false;
     }
@@ -48,6 +49,7 @@ Pinterest.Tile = (function() {
     if (only_width) {
       col_index = 0;
       _ref = this.columns;
+      _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         column = _ref[_i];
         _ref1 = column.rows;
@@ -58,39 +60,39 @@ Pinterest.Tile = (function() {
             left: padding + container.offset().left + this.tile_width * col_index
           });
         }
-        col_index += 1;
+        _results.push(col_index += 1);
       }
+      return _results;
     } else {
       this.columns = [];
+      this.heights = [];
       for (i = _k = 0, _ref2 = col_num - 1; 0 <= _ref2 ? _k <= _ref2 : _k >= _ref2; i = 0 <= _ref2 ? ++_k : --_k) {
         this.columns.push({
           height: 0,
-          rows: []
+          rows: [],
+          left: padding + container.offset().left + this.tile_width * i
         });
+        this.heights.push(0);
       }
       col_index = 0;
-      max_height = 0;
       _ref3 = this.get_tiles();
+      _results1 = [];
       for (_l = 0, _len2 = _ref3.length; _l < _len2; _l++) {
         dom = _ref3[_l];
         dom = $(dom);
+        min_height = _.min(this.heights);
+        col_index = _.indexOf(this.heights, min_height);
         column = this.columns[col_index];
         column.rows.push(dom);
         dom.offset({
           top: container.offset().top + column.height,
-          left: padding + container.offset().left + this.tile_width * col_index
+          left: column.left
         });
         column.height += dom.height();
-        col_index += 1;
-        if (col_index === col_num) {
-          col_index = 0;
-        }
-        if (max_height < column.height) {
-          max_height = column.height;
-        }
+        _results1.push(this.heights[col_index] = column.height);
       }
+      return _results1;
     }
-    return container.height(max_height + 30);
   };
 
   return Tile;

@@ -1,7 +1,7 @@
 
 class ViewModel
     constructor: (num)->
-        @contents = (i for i in [1..num])
+        @contents = ({name: i, height: 20+Math.random()*100} for i in [1..num])
 
 vm = new ViewModel(500)
 

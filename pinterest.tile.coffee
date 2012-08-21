@@ -20,6 +20,7 @@ class Pinterest.Tile
         # the value which tiles are in an column.
         # {height: integer, rows: []}
         @columns = []
+        @heights = []
 
     start: ()=>
         @resize()
@@ -56,25 +57,27 @@ class Pinterest.Tile
                 col_index += 1
         else
             @columns = []
+            @heights = []
             for i in [0..col_num-1]
-                @columns.push({height:0, rows:[]})
+                @columns.push({height:0, rows:[], left:padding+container.offset().left+@tile_width*i})
+                @heights.push(0)
             col_index = 0
-            max_height = 0
+            # max_height = 0
 
             for dom in @get_tiles()
                 dom = $(dom)
+                # TODO: min index
+                min_height = _.min(@heights)
+                col_index = _.indexOf(@heights, min_height)
+                
                 column = @columns[col_index]
                 column.rows.push(dom)
                 dom.offset {
                     top: container.offset().top+column.height
-                    , left: padding+container.offset().left+@tile_width*col_index
+                    , left: column.left
                 }
                 column.height += dom.height()
-                col_index += 1
-                if col_index == col_num
-                    col_index = 0
-                if max_height < column.height
-                    max_height = column.height
-
-        # also change container size
-        container.height(max_height+30)
+                @heights[col_index] = column.height
+                # col_index += 1
+                # if col_index == col_num
+                #     col_index = 0
