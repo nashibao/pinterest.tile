@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Pinterest UI Demo!</title>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+  <script type="text/javascript" src="underscore-1.2.2.js"></script>
+  <script type="text/javascript" src="knockout-2.1.0.js"></script>
+  <script type="text/javascript" src="utils.js"></script>
+  <script type="text/javascript" src="pinterest.tile.js"></script>
+  <script type="text/javascript" src="lastfm.js"></script>
+  <style type="text/css">
+    .tile{
+      background-color: #fff;
+      /*border-bottom: 2px solid #fff;*/
+      color: #fff;
+      padding-bottom: 0px;
+      padding-top: 0px;
+      font-size: 12px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="container_dom" data-bind="foreach: contents">
+    <div name="tile" style="position: absolute;width: 190px;top:0px;left:0px;">
+      <div class="tile" style="padding-bottom: 10px;">
+        <div style="margin-bottom: -3px;"><img src='lastfm.jpg' width="190" data-bind="attr:{src:image[3]['#text']}"></img></div>
+        <div style="background-color: black;font-size: 32px;" data-bind="text: name">title</div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
