@@ -30,10 +30,12 @@ Pinterest.Tile = (function() {
   Tile.prototype.start = function() {
     var _this = this;
     this.resize();
-    this.resize_handler(function(tile) {
-      var force_resizing;
-      return _this.resize(force_resizing = false, tile = tile);
-    });
+    if (this.resize_handler) {
+      this.resize_handler(function(tile) {
+        var force_resizing;
+        return _this.resize(force_resizing = false, tile = tile);
+      });
+    }
     return $(window).resize(function() {
       return _this.resize();
     });

@@ -27,8 +27,9 @@ class Pinterest.Tile
     start: ()=>
         @resize()
         # initialize
-        @resize_handler (tile)=>
-            @resize(force_resizing=false, tile=tile)
+        if @resize_handler
+            @resize_handler (tile)=>
+                @resize(force_resizing=false, tile=tile)
         $(window).resize () =>
             @resize()
 
