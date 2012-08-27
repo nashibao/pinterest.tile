@@ -1,13 +1,16 @@
 
 class ViewModel
     constructor: (num)->
-        @contents = (i for i in [1..num])
+        @contents = ({name: i, height: 20+Math.random()*100} for i in [1..num])
 
-vm = new ViewModel(50)
+vm = new ViewModel(500)
 
-tile = new Pinterest.Tile({container_dom: "#container_dom", tile_width: 320, tile_top: 100, img_dom_height: 195, allcalc:true, inner_dom_func: ()=>
+tile = new Pinterest.Tile {
+    container: "#container_dom"
+    , tile_width: 200
+    , get_tiles: ()=>
             return $('div', $('#container_dom'))
-        })
+    }
 
 $(document).ready ()=>
     ko.applyBindings(vm)
