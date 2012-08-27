@@ -17,11 +17,12 @@ Pinterest.Tile = (function() {
 
     this.start = __bind(this.start, this);
 
-    var container, get_tiles, tile_width;
-    container = options.container, tile_width = options.tile_width, get_tiles = options.get_tiles;
+    var container, get_tiles, resize_handler, tile_width;
+    container = options.container, tile_width = options.tile_width, get_tiles = options.get_tiles, resize_handler = options.resize_handler;
     this.container = container ? container : $(document);
     this.tile_width = tile_width ? tile_width : 320;
-    this.get_tiles = get_tiles ? get_tiles : void 0;
+    this.get_tiles = get_tiles ? get_tiles : false;
+    this.resize_handler = resize_handler ? resize_handler : false;
     this.columns = [];
     this.heights = [];
   }
@@ -29,15 +30,22 @@ Pinterest.Tile = (function() {
   Tile.prototype.start = function() {
     var _this = this;
     this.resize();
+    this.resize_handler(function(tile) {
+      var force_resizing;
+      return _this.resize(force_resizing = false, tile = tile);
+    });
     return $(window).resize(function() {
       return _this.resize();
     });
   };
 
-  Tile.prototype.resize = function(force_resizing) {
-    var col_index, col_num, column, container, dom, i, min_height, only_width, padding, _i, _j, _k, _l, _len, _len1, _len2, _ref, _ref1, _ref2, _ref3, _results, _results1;
+  Tile.prototype.resize = function(force_resizing, tile) {
+    var col_index, col_num, column, container, dom, i, min_height, only_width, padding, row_index, _i, _j, _k, _l, _len, _len1, _len2, _m, _n, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _results, _results1, _results2;
     if (force_resizing == null) {
       force_resizing = false;
+    }
+    if (tile == null) {
+      tile = false;
     }
     container = $(this.container);
     col_num = Math.floor(container.width() / this.tile_width);
@@ -47,51 +55,82 @@ Pinterest.Tile = (function() {
     }
     padding = (container.width() - (col_num * this.tile_width)) / 2;
     if (only_width) {
-      col_index = 0;
-      _ref = this.columns;
-      _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        column = _ref[_i];
-        _ref1 = column.rows;
-        for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-          dom = _ref1[_j];
-          dom.offset({
-            top: dom.offset().top,
-            left: padding + container.offset().left + this.tile_width * col_index
-          });
+      if (tile) {
+        col_index = parseInt(tile.data('colindex'), 10);
+        row_index = parseInt(tile.data('rowindex'), 10);
+        column = this.columns[col_index];
+        if ((column.rows.length - 1) > row_index) {
+          column.height = 0;
+          for (i = _i = 0; 0 <= row_index ? _i <= row_index : _i >= row_index; i = 0 <= row_index ? ++_i : --_i) {
+            dom = column.rows[i];
+            column.height += dom.height();
+          }
+          _results = [];
+          for (i = _j = _ref = row_index + 1, _ref1 = column.rows.length - 1; _ref <= _ref1 ? _j <= _ref1 : _j >= _ref1; i = _ref <= _ref1 ? ++_j : --_j) {
+            dom = column.rows[i];
+            dom.offset({
+              top: container.offset().top + column.height,
+              left: column.left
+            });
+            column.height += dom.height();
+            _results.push(this.heights[i] = column.height);
+          }
+          return _results;
         }
-        _results.push(col_index += 1);
+      } else {
+        col_index = 0;
+        _ref2 = this.columns;
+        _results1 = [];
+        for (_k = 0, _len = _ref2.length; _k < _len; _k++) {
+          column = _ref2[_k];
+          _ref3 = column.rows;
+          for (_l = 0, _len1 = _ref3.length; _l < _len1; _l++) {
+            dom = _ref3[_l];
+            dom.offset({
+              top: dom.offset().top,
+              left: padding + container.offset().left + this.tile_width * col_index
+            });
+          }
+          _results1.push(col_index += 1);
+        }
+        return _results1;
       }
-      return _results;
     } else {
       this.columns = [];
       this.heights = [];
-      for (i = _k = 0, _ref2 = col_num - 1; 0 <= _ref2 ? _k <= _ref2 : _k >= _ref2; i = 0 <= _ref2 ? ++_k : --_k) {
-        this.columns.push({
+      for (i = _m = 0, _ref4 = col_num - 1; 0 <= _ref4 ? _m <= _ref4 : _m >= _ref4; i = 0 <= _ref4 ? ++_m : --_m) {
+        column = {
           height: 0,
           rows: [],
-          left: padding + container.offset().left + this.tile_width * i
-        });
+          left: padding + container.offset().left + this.tile_width * i,
+          col_index: i
+        };
+        this.columns.push(column);
         this.heights.push(0);
       }
       col_index = 0;
-      _ref3 = this.get_tiles();
-      _results1 = [];
-      for (_l = 0, _len2 = _ref3.length; _l < _len2; _l++) {
-        dom = _ref3[_l];
+      _ref5 = this.get_tiles();
+      _results2 = [];
+      for (_n = 0, _len2 = _ref5.length; _n < _len2; _n++) {
+        dom = _ref5[_n];
         dom = $(dom);
         min_height = _.min(this.heights);
         col_index = _.indexOf(this.heights, min_height);
         column = this.columns[col_index];
         column.rows.push(dom);
+        row_index = column.rows.length - 1;
+        dom.attr({
+          'data-colindex': col_index,
+          'data-rowindex': row_index
+        });
         dom.offset({
           top: container.offset().top + column.height,
           left: column.left
         });
         column.height += dom.height();
-        _results1.push(this.heights[col_index] = column.height);
+        _results2.push(this.heights[col_index] = column.height);
       }
-      return _results1;
+      return _results2;
     }
   };
 
