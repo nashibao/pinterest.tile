@@ -21,7 +21,7 @@ utils.getJSON = function(url, callback) {
     url: url,
     type: 'GET',
     traditional: true,
-    cache: false,
+    cache: true,
     data: {},
     dataType: 'json',
     success: function(data, dataType) {

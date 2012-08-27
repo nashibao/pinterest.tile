@@ -9,11 +9,13 @@ class Pinterest.Tile
             , tile_width: tile_width
             # return an array which store all tile doms
             , get_tiles: get_tiles
+            , resize_handler: resize_handler
         } = options
 
         @container = if container then container else $(document)
         @tile_width = if tile_width then tile_width else 320
-        @get_tiles = if get_tiles then get_tiles
+        @get_tiles = if get_tiles then get_tiles else false
+        @resize_handler = if resize_handler then resize_handler else false
 
         # @columns has height values and 
         # the value which tiles are in an column.
@@ -24,10 +26,12 @@ class Pinterest.Tile
     start: ()=>
         @resize()
         # initialize
+        @resize_handler (tile)=>
+            @resize(force_resizing=false, tile=tile)
         $(window).resize () =>
             @resize()
 
-    resize: (force_resizing=false)=>
+    resize: (force_resizing=false, tile=false)=>
         # container dom (to guarantee container point to jquery dom object.)
         container = $(@container)
 
@@ -46,19 +50,38 @@ class Pinterest.Tile
 
         # initialize parameters
         if only_width
-            col_index = 0
-            for column in @columns
-                for dom in column.rows
-                    dom.offset {
-                        top: dom.offset().top
-                        , left: padding + container.offset().left + @tile_width * col_index
-                    }
-                col_index += 1
+            if tile
+                col_index = parseInt(tile.data('colindex'), 10)
+                row_index = parseInt(tile.data('rowindex'), 10)
+                column = @columns[col_index]
+                if (column.rows.length - 1) > row_index
+                    column.height = 0
+                    for i in [0..row_index]
+                        dom = column.rows[i]
+                        column.height += dom.height()
+                    for i in [row_index+1..column.rows.length-1]
+                        dom = column.rows[i]
+                        dom.offset {
+                            top: container.offset().top+column.height
+                            , left: column.left
+                        }
+                        column.height += dom.height()
+                        @heights[i] = column.height
+            else
+                col_index = 0
+                for column in @columns
+                    for dom in column.rows
+                        dom.offset {
+                            top: dom.offset().top
+                            , left: padding + container.offset().left + @tile_width * col_index
+                        }
+                    col_index += 1
         else
             @columns = []
             @heights = []
             for i in [0..col_num-1]
-                @columns.push({height:0, rows:[], left:padding+container.offset().left+@tile_width*i})
+                column = {height:0, rows:[], left:padding+container.offset().left+@tile_width*i, col_index: i}
+                @columns.push(column)
                 @heights.push(0)
             col_index = 0
             # max_height = 0
@@ -71,6 +94,8 @@ class Pinterest.Tile
                 
                 column = @columns[col_index]
                 column.rows.push(dom)
+                row_index = column.rows.length-1
+                dom.attr({'data-colindex': col_index, 'data-rowindex': row_index})
                 dom.offset {
                     top: container.offset().top+column.height
                     , left: column.left

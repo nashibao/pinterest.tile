@@ -11,7 +11,7 @@ utils.getJSON = (url, callback) ->
         url: url
         type: 'GET'
         traditional: true
-        cache: false
+        cache: true
         data: {}
         dataType: 'json'
         success: (data, dataType) ->
