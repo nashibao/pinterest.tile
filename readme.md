@@ -4,4 +4,4 @@ tile ui library like pinterest. this is composed by tiny(only about 40 lines) ja
 <http://nashibao.github.com/pinterest.tile/>
 
 # screenshot
-![screenshot1](http://nashibao.github.com/pinterest.tile/screenshot.png)
+![screenshot1](https://raw.github.com/nashibao/pinterest.tile/master/screenshot.png)
