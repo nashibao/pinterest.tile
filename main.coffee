@@ -15,9 +15,6 @@ tile = new Pinterest.Tile {
     , tile_width: 200
     , get_tiles_handler: ()=>
             return $('div', $('#container_dom'))
-    # , update_tile_handler: (callback)=>
-    #     $('img', $('#container_dom')).load (evt)=>
-    #         callback $(evt.target).parent().parent().parent()
     }
 
 $(document).ready ()=>
