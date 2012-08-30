@@ -12,7 +12,7 @@ ViewModel = (function() {
       for (i = _i = 1; 1 <= num ? _i <= num : _i >= num; i = 1 <= num ? ++_i : --_i) {
         _results.push({
           name: i,
-          height: 20 + Math.random() * 100
+          height: 20 + Math.random() * 20
         });
       }
       return _results;
