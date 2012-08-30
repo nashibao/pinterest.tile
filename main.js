@@ -6,7 +6,7 @@ ViewModel = (function() {
 
   function ViewModel(num) {
     var i;
-    this.contents = (function() {
+    this.contents = ko.observableArray((function() {
       var _i, _results;
       _results = [];
       for (i = _i = 1; 1 <= num ? _i <= num : _i >= num; i = 1 <= num ? ++_i : --_i) {
@@ -16,8 +16,19 @@ ViewModel = (function() {
         });
       }
       return _results;
-    })();
+    })());
   }
+
+  ViewModel.prototype.load_more = function() {
+    var i, _i;
+    for (i = _i = 0; _i <= 10; i = ++_i) {
+      this.contents.push({
+        name: 'added',
+        height: 20 + Math.random() * 100
+      });
+    }
+    return tile.update();
+  };
 
   return ViewModel;
 
@@ -28,7 +39,7 @@ vm = new ViewModel(500);
 tile = new Pinterest.Tile({
   container: "#container_dom",
   tile_width: 200,
-  get_tiles: function() {
+  get_tiles_handler: function() {
     return $('div', $('#container_dom'));
   }
 });
