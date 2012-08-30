@@ -6,6 +6,7 @@
   <title>Pinterest UI Demo!</title>
   <link href='http://fonts.googleapis.com/css?family=Lobster|Oswald|Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+  <script type="text/javascript" src="jquery.lazyload.min.js"></script>
   <script type="text/javascript" src="underscore-1.2.2.js"></script>
   <script type="text/javascript" src="knockout-2.1.0.js"></script>
   <script type="text/javascript" src="utils.js"></script>
@@ -81,7 +82,7 @@
     <div name="tile" style="position: absolute;width: 190px;top:0px;left:0px;">
       <div class="tile" style="padding-bottom: 10px;">
         <div style="margin-bottom: -3px;" class="side-corner-tag">
-          <img src='lastfm.jpg' width="190" data-bind="attr:{src:image[3]['text']}"></img>
+          <img src='lastfm.png' width="190" data-bind="attr:{'data-original':image[3]['text']}"></img>
           <p><span>newest</span></p>
         </div>
         <div style="background-color: black;font-size: 32px;font-family: 'Lobster', cursive; padding: 6px 10px 6px 10px; color: white;" data-bind="text: name">title</div>
