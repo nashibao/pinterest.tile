@@ -1,14 +1,14 @@
 
 class ViewModel
     constructor: (num)->
-        @contents = ko.observableArray(({name: i, height: 20+Math.random()*20} for i in [1..num]))
+        @contents = ko.observableArray(({name: i, height: 20+Math.random()*100} for i in [1..num]))
     load_more: ()->
         for i in [0..10]
             @contents.push({name: 'added', height: 20+Math.random()*100})
         tile.update()
 
 
-vm = new ViewModel(500)
+vm = new ViewModel(30)
 
 tile = new Pinterest.Tile {
     container: "#container_dom"
