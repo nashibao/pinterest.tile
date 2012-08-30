@@ -14,9 +14,9 @@ vm = new ViewModel(500)
 tile = new Pinterest.Tile {
     container: "#container_dom"
     , tile_width: 210
-    , get_tiles: ()=>
+    , get_tiles_handler: ()=>
             return $('div[name="tile"]', $('#container_dom'))
-    , resize_handler: (callback)=>
+    , update_tile_handler: (callback)=>
         $('img', $('#container_dom')).load (evt)=>
             callback $(evt.target).parent().parent().parent()
     }
