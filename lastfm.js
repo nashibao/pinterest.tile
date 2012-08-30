@@ -1398,6 +1398,9 @@ $(document).ready(function() {
   ko.applyBindings(vm);
   if (true) {
     vm.contents(data.topartists.artist);
-    return tile.start();
+    tile.start();
   }
+  return $("img").lazyload({
+    effect: "fadeIn"
+  });
 });

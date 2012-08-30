@@ -30,3 +30,4 @@ $(document).ready ()=>
     if true
         vm.contents(data.topartists.artist)
         tile.start()
+    $("img").lazyload {effect: "fadeIn"}
