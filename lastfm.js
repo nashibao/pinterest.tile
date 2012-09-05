@@ -1396,10 +1396,8 @@ tile = new Pinterest.Tile({
 
 $(document).ready(function() {
   ko.applyBindings(vm);
-  if (true) {
-    vm.contents(data.topartists.artist);
-    tile.start();
-  }
+  vm.contents(data.topartists.artist);
+  tile.start();
   return $("img").lazyload({
     effect: "fadeIn"
   });

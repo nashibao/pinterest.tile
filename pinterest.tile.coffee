@@ -9,6 +9,12 @@ class Pinterest.Tile
             , tile_width: tile_width
             # return an array which store all tile doms
             , get_tiles_handler: get_tiles_handler
+            # notify the timing when a tile is resized
+            # ext:
+            # update_tile_handler: (callback)=>
+            #    $('img').load (evt)=>
+            #       tile = $(evt.target).parent()
+            #       callback tile
             , update_tile_handler: update_tile_handler
         } = options
 
@@ -28,30 +34,19 @@ class Pinterest.Tile
     start: ()=>
         @container = $(@container)
         @_resize()
-        # initialize
         if @update_tile_handler
             @update_tile_handler (tile)=>
                 @_resize(force_update_column_size=false, tile_for_update=tile)
         $(window).resize () =>
             @_resize()
+
     update: (tile=false)=>
         @_resize(force_update_column_size=false, tile_for_update=tile)
 
     _update_dom: (dom, column, col_index, row_index, update_left=false, update_top=false)=>
-        ntop = 0
-        nleft = 0
-        if update_left
-            nleft = @padding + @container.offset().left + @tile_width * col_index
-        else
-            nleft = column.left
-        if update_top
-            ntop = @container.offset().top+column.height
-        else
-            ntop = dom.offset().top
-        dom.offset {
-            top: ntop
-            , left: nleft
-        }
+        nleft = if update_left then @padding + @container.offset().left + @tile_width * col_index else column.left
+        ntop = if update_top then @container.offset().top+column.height else dom.offset().top
+        dom.offset {top: ntop, left: nleft}
         if update_top
             column.height += dom.height()
             @heights[col_index] = column.height
@@ -68,12 +63,9 @@ class Pinterest.Tile
         dom.data('puicolindex', col_index)
         dom.data('puirowindex', row_index)
         dom.data('puienabled', true)
-        # dom.attr({'data-colindex': col_index, 'data-rowindex': row_index, 'data-puienabled': true})
         @_update_dom(dom, column, col_index, row_index, update_left=false, update_top=true)
 
     _resize: (force_update_column_size=false, tile_for_update=false)=>
-        # container dom (to guarantee container point to jquery dom object.)
-
         # index size of column
         @col_num = Math.floor(@container.width() / (@tile_width))
         

@@ -68,18 +68,8 @@ Pinterest.Tile = (function() {
     if (update_top == null) {
       update_top = false;
     }
-    ntop = 0;
-    nleft = 0;
-    if (update_left) {
-      nleft = this.padding + this.container.offset().left + this.tile_width * col_index;
-    } else {
-      nleft = column.left;
-    }
-    if (update_top) {
-      ntop = this.container.offset().top + column.height;
-    } else {
-      ntop = dom.offset().top;
-    }
+    nleft = update_left ? this.padding + this.container.offset().left + this.tile_width * col_index : column.left;
+    ntop = update_top ? this.container.offset().top + column.height : dom.offset().top;
     dom.offset({
       top: ntop,
       left: nleft
